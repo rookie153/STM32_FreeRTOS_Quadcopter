@@ -1,5 +1,13 @@
-#include<stm32f10x.h>
-void delay()
+#include "FreeRTOS.h"
+#include "task.h"
+#include "stm32f10x.h"
+#include "led.h"
+
+static TaskHandle_t Start_Task_Handle=NULL;
+static TaskHandle_t Led_Task_Handle=NULL;
+static void LED_Task(void* parameter);
+
+void delay()  //大概延时500ms？
 {
 	unsigned int a=12000;
 	int b=500;
@@ -8,26 +16,40 @@ void delay()
 
 }
 
-void LEDInit(void)	
-{	
-	GPIO_InitTypeDef GPIO_InitStructure;
-	AFIO->MAPR = 0X02000000; //使能4线烧写 释放某些与烧写相关的引脚
-	 RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB  , ENABLE);
-  	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;		     //LED12
-  	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-  	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  	GPIO_Init(GPIOB, &GPIO_InitStructure);	
-}
-int  main()
+static void Start_Task(void* parameter)
 {
-	LEDInit();
+	taskENTER_CRITICAL();
+	xTaskCreate(  LED_Task,     //任务入口函数
+	              "LED_Task",    //任务名字
+	               100,          //任务栈大小
+	              NULL,          //任务入口函数参数
+	              1,             //优先级
+	               &Led_Task_Handle //句柄   任务控制快指针
+	             );
+	vTaskDelete(Start_Task_Handle);
+	taskEXIT_CRITICAL();
+}
+static void LED_Task(void* parameter)
+{
 	while(1)
-	{		
-		GPIO_SetBits(GPIOB,GPIO_Pin_1);
-		delay();
-		GPIO_ResetBits(GPIOB,GPIO_Pin_1);
-		delay();
-	};
-	return 0;
+	{
+		LED_ON;
+		vTaskDelay(500);
+		LED_OFF;
+		vTaskDelay(500);      
+	}
+}
 
+void BSP_Iint(void)
+{
+    NVIC_PriorityGroupConfig( NVIC_PriorityGroup_4 );
+    LED_Init();
+	USART_Config();
+}
+int main(void)
+{
+    BSP_Iint();
+	xTaskCreate(Start_Task,"Start_Task",100,NULL,2,&Start_Task_Handle);
+	vTaskStartScheduler();
+	while(1);
 }
