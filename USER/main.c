@@ -34,8 +34,11 @@ static void LED_Task(void* parameter)
 	while(1)
 	{
 		LED_ON;
+		printf("LED ON\r\n");
 		vTaskDelay(500);
+		
 		LED_OFF;
+		printf("LED OFF\r\n");
 		vTaskDelay(500);      
 	}
 }
