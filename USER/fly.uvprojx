@@ -365,7 +365,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER,STM32F10X_MD</Define>
               <Undefine></Undefine>
-              <IncludePath>..\CORE;..\LIB\inc;..\USER;..\FreeRTOS\include;..\FreeRTOS\port\RVDS\ARM_CM3;.\usart;..\HARDWARE;.\usart</IncludePath>
+              <IncludePath>..\CORE;..\LIB\inc;..\USER;..\FreeRTOS\include;..\FreeRTOS\port\RVDS\ARM_CM3;.\usart;..\HARDWARE;.\usart;.\iic</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -447,6 +447,11 @@
               <FileName>bsp_usart.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\usart\bsp_usart.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_iic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\iic\bsp_iic.c</FilePath>
             </File>
           </Files>
         </Group>

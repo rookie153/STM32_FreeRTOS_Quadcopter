@@ -24,7 +24,7 @@ static void Start_Task(void* parameter)
 	               100,          //任务栈大小
 	              NULL,          //任务入口函数参数
 	              1,             //优先级
-	               &Led_Task_Handle //句柄   任务控制快指针
+	               &Led_Task_Handle //句柄   任务控制块指针
 	             );
 	vTaskDelete(Start_Task_Handle);
 	taskEXIT_CRITICAL();
